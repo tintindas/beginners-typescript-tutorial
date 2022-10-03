@@ -2,8 +2,9 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const chokidar = require("chokidar");
+const { log } = require("console");
 
-const srcPath = path.resolve(__dirname, "../src");
+let srcPath = path.resolve(__dirname, "../src");
 const tsconfigPath = path.resolve(__dirname, "../tsconfig.json");
 
 const [, , exercise] = process.argv;
@@ -13,17 +14,20 @@ if (!exercise) {
   process.exit(1);
 }
 
-const allExercises = fs.readdirSync(srcPath);
-
 let pathIndicator = ".problem.";
 
 if (process.env.SOLUTION) {
   pathIndicator = ".solution.";
+  srcPath += "/solutions/";
+} else {
+  srcPath += "/problems";
 }
+
+const allExercises = fs.readdirSync(srcPath);
 
 const exercisePath = allExercises.find(
   (exercisePath) =>
-    exercisePath.startsWith(exercise) && exercisePath.includes(pathIndicator),
+    exercisePath.startsWith(exercise) && exercisePath.includes(pathIndicator)
 );
 
 if (!exercisePath) {
